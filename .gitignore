@@ -1,0 +1,9 @@
+*.png
+*.jpg
+*__pycache__
+*AM
+*PM
+step_*
+epoch_*
+*00
+*diffusion*

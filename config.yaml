@@ -1,0 +1,60 @@
+resolution: 224
+inference_steps: 10
+guidance_scale: 7.5
+batch_size: 1
+encoder_checkpoint: microsoft/layoutlmv3-base
+checkpoint: stable_diffusion-v1-5/checkpoint-1000
+device: cuda
+data_dir: ../FUNSD_dataset/training_data
+scaling_factor: 8
+
+train:
+  output_dir: stable_diffusion-v1-5
+  logging_dir: logs
+  pretrained_model_name_or_path: runwayml/stable-diffusion-v1-5
+  data_dir: ../FUNSD_dataset/training_data
+  revision:
+  resume_from_checkpoint: latest
+  device: cuda
+  resolution: 224
+  encoder: microsoft/layoutlmv3-base
+  gradient_accumulation_steps: 1
+  mixed_precision: 'no'
+  report_to: tensorboard
+  seed: 
+  learning_rate: 1e-4
+  train_batch_size: 4
+  use_8bit_adam: False
+  gradient_checkpointing:
+  checkpointing_steps: 500
+  adam_beta1: 0.9
+  adam_beta2: 0.999
+  adam_weight_decay: 1e-2
+  adam_epsilon: 1e-08
+  max_grad_norm: 1.0
+  max_train_steps: 
+  num_train_epochs: 100
+  lr_scheduler: constant
+  lr_warmup_steps: 500
+  use_ema: True
+  scale_lr: False
+  local_rank: -1
+
+VAE:
+
+UNET:
+
+Conditional_Encoder:
+  input_size: 224
+
+Data:
+  datasets: FUNSD
+
+
+Distributed:
+
+
+Pipeline:
+
+
+Scheduler:
