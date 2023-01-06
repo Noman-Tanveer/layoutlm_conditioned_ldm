@@ -21,7 +21,7 @@ from accelerate import Accelerator
 from accelerate.logging import get_logger
 from accelerate.utils import set_seed
 from datasets import load_dataset
-from diffusers import AutoencoderKL, DDPMScheduler, StableDiffusionPipeline, UNet2DConditionModel
+from diffusers import StableDiffusionPipeline
 from diffusers.optimization import get_scheduler
 from diffusers.utils import check_min_version
 from tqdm.auto import tqdm
@@ -29,6 +29,7 @@ from tqdm.auto import tqdm
 from utils.ema import EMAModel
 from dataloaders.funsd_data import FUNSD
 from architecture import get_model_componenets
+from pipeline import CustomDiffusionPipeline
 
 # Will error if the minimal version of diffusers is not installed. Remove at your own risks.
 check_min_version("0.10.0.dev0")
@@ -280,13 +281,9 @@ def main(cfg):
         if cfg.use_ema:
             ema_unet.copy_to(unet.parameters())
 
-        pipeline = StableDiffusionPipeline.from_pretrained(
+        pipeline = CustomDiffusionPipeline.from_pretrained(
             cfg.pretrained_model_name_or_path,
-            text_encoder=text_encoder,
-            vae=vae,
-            unet=unet,
-            revision=cfg.revision,
-        )
+            )
         pipeline.save_pretrained(cfg.output_dir)
 
     accelerator.end_training()

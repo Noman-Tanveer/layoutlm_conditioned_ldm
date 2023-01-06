@@ -3,18 +3,20 @@ inference_steps: 10
 guidance_scale: 7.5
 batch_size: 1
 encoder_checkpoint: microsoft/layoutlmv3-base
-checkpoint: stable_diffusion-v1-5/checkpoint-1000
+pipeline: CompVis/stable-diffusion-v1-4
+checkpoint: checkpoint-5000/pytorch_model.bin
 device: cuda
 data_dir: ../FUNSD_dataset/training_data
 scaling_factor: 8
 
 train:
-  output_dir: stable_diffusion-v1-5
+  output_dir: stable_diffusion-v1-4
   logging_dir: logs
-  pretrained_model_name_or_path: runwayml/stable-diffusion-v1-5
+  pretrained_model_name_or_path: CompVis/stable-diffusion-v1-4
   data_dir: ../FUNSD_dataset/training_data
   revision:
-  resume_from_checkpoint: latest
+  resume_from_checkpoint: 
+  load_checkpoint: latest
   device: cuda
   resolution: 224
   encoder: microsoft/layoutlmv3-base
@@ -32,8 +34,8 @@ train:
   adam_weight_decay: 1e-2
   adam_epsilon: 1e-08
   max_grad_norm: 1.0
-  max_train_steps: 
-  num_train_epochs: 100
+  max_train_steps: 5
+  num_train_epochs: 200
   lr_scheduler: constant
   lr_warmup_steps: 500
   use_ema: True

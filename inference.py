@@ -23,14 +23,19 @@ rand_generator = torch.manual_seed(32)   # Seed generator to create the inital l
 test_image = "00070353.png"
 
 
-def get_components(checkpoint=cfg.checkpoint, encoder_checkpoint="microsoft/layoutlmv3-base"):
+def get_components(checkpoint=cfg.pipeline, encoder_checkpoint="microsoft/layoutlmv3-base"):
     # 1. Load the autoencoder model which will be used to decode the latents into image space. 
     vae = AutoencoderKL.from_pretrained(checkpoint, subfolder="vae")
     # 2. Load the tokenizer and text encoder to tokenize and encode the text. 
     text_encoder = LayoutLMv3Model.from_pretrained(encoder_checkpoint)
     # 3. The UNet model for generating the latents.
-    unet = UNet2DConditionModel.from_pretrained(checkpoint, subfolder="unet")
+    state_dict = torch.load(os.path.join(cfg.pipeline, cfg.checkpoint))
+    unet = UNet2DConditionModel()
+    unet = unet.load_state_dict(state_dict=state_dict)
     scheduler = LMSDiscreteScheduler.from_pretrained(checkpoint, subfolder="scheduler")
+    vae.requires_grad_(False)
+    text_encoder.requires_grad_(False)
+    unet.requires_grad_(False)
 
     vae = vae.to(torch_device)
     text_encoder = text_encoder.to(torch_device)
@@ -38,7 +43,7 @@ def get_components(checkpoint=cfg.checkpoint, encoder_checkpoint="microsoft/layo
 
     return vae, unet, text_encoder, scheduler
 
-vae, unet, text_encoder, scheduler = get_components(cfg.checkpoint, cfg.encoder_checkpoint)
+vae, unet, text_encoder, scheduler = get_components(cfg.pipeline, cfg.encoder_checkpoint)
 
 dataset = FUNSD(cfg)
 encoder_input = dataset(test_image)
